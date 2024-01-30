@@ -5,7 +5,7 @@ plugins {
 }
 
 base {
-    java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
 
     archivesName = project.maven_name ?: rootProject.maven_name
@@ -30,6 +30,7 @@ repositories {
 
 dependencies {
     implementation "com.google.code.findbugs:jsr305:3.0.2"
+    include "net.lenni0451.commons:core:1.4.2"
     include "net.lenni0451.commons:swing:1.4.2"
 }
 
