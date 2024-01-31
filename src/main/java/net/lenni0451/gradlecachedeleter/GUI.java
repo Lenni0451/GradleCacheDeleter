@@ -66,7 +66,9 @@ public class GUI extends JFrame {
 
             JPopupMenu contextMenu = new JPopupMenu();
             JMenuItem deleteMenuItem = new JMenuItem("Delete");
+            JMenuItem refreshMenuItem = new JMenuItem("Refresh");
             contextMenu.add(deleteMenuItem);
+            contextMenu.add(refreshMenuItem);
             deleteMenuItem.addActionListener(e -> {
                 int[] selectedRows = this.dependenciesTable.getSelectedRows();
                 DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
@@ -80,6 +82,7 @@ public class GUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file(s)", "Deleted", JOptionPane.INFORMATION_MESSAGE);
                 this.refresh();
             });
+            refreshMenuItem.addActionListener(e -> this.refresh());
             this.dependenciesTable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -115,7 +118,7 @@ public class GUI extends JFrame {
     private void refreshTable() {
         DependencyList list = this.dependenciesFuture.join();
         Map<String, Map<String, Map<String, List<File>>>> dependencies = list.getDependencies();
-        String[] search = this.searchField.getText().toLowerCase().split(" ");
+        String[] search = this.searchField.getText().toLowerCase().split("[\\s:]");
 
         DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
         model.setRowCount(0);
