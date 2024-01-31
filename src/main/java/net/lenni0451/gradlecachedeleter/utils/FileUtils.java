@@ -28,4 +28,16 @@ public class FileUtils {
         return result.toArray(new File[0]);
     }
 
+    public static boolean delete(final File file) {
+        if (file.isDirectory()) {
+            File[] files = list(file);
+            boolean success = true;
+            for (File f : files) {
+                if (!delete(f)) success = false;
+            }
+            if (!success) return false;
+        }
+        return file.delete();
+    }
+
 }
