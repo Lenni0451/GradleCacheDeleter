@@ -19,6 +19,10 @@ public class DependencyList {
         this.crawl();
     }
 
+    public Map<String, Map<String, Map<String, List<File>>>> getDependencies() {
+        return this.dependencies;
+    }
+
     public void printTree() {
         for (Map.Entry<String, Map<String, Map<String, List<File>>>> pkg : this.dependencies.entrySet()) {
             System.out.println(pkg.getKey());

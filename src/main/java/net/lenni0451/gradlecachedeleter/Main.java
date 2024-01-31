@@ -1,5 +1,6 @@
 package net.lenni0451.gradlecachedeleter;
 
+import javax.swing.*;
 import java.io.File;
 
 public class Main {
@@ -9,8 +10,13 @@ public class Main {
     public static final File GRADLE_MODULES = new File(GRADLE_CACHES, "modules-2");
 
     public static void main(String[] args) {
-        DependencyList dependencyList = new DependencyList();
-        dependencyList.printTree();
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        new GUI();
     }
 
 }
