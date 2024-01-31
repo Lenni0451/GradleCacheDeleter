@@ -1,13 +1,9 @@
 package net.lenni0451.gradlecachedeleter;
 
-import net.lenni0451.commons.collections.Lists;
 import net.lenni0451.gradlecachedeleter.utils.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DependencyList {
 
@@ -60,7 +56,11 @@ public class DependencyList {
                 String name = nameFile.getName();
                 for (File versionFile : FileUtils.list(nameFile)) {
                     String version = versionFile.getName();
-                    this.dependencies.computeIfAbsent(pkg, k -> new HashMap<>()).computeIfAbsent(name, k -> new HashMap<>()).put(version, Lists.arrayList(FileUtils.list(versionFile)));
+                    this.dependencies
+                            .computeIfAbsent(pkg, k -> new HashMap<>())
+                            .computeIfAbsent(name, k -> new HashMap<>())
+                            .computeIfAbsent(version, k -> new ArrayList<>())
+                            .addAll(Arrays.asList(FileUtils.list(versionFile)));
                 }
             }
         }
