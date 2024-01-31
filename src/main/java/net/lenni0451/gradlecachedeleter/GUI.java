@@ -62,7 +62,12 @@ public class GUI extends JFrame {
         });
 
         GBC.create(contentPane).grid(0, 1).insets(5, 5, 5, 5).width(2).weight(1, 1).fill(GBC.BOTH).add(() -> {
-            this.dependenciesTable = new JTable(new DefaultTableModel(new Object[]{"Package", "Name", "Version"}, 0));
+            this.dependenciesTable = new JTable(new DefaultTableModel(new Object[]{"Package", "Name", "Version"}, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            });
 
             JPopupMenu contextMenu = new JPopupMenu();
             JMenuItem deleteMenuItem = new JMenuItem("Delete");
