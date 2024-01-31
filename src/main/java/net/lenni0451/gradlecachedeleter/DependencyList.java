@@ -3,10 +3,7 @@ package net.lenni0451.gradlecachedeleter;
 import net.lenni0451.gradlecachedeleter.utils.FileUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DependencyList {
 
@@ -60,8 +57,8 @@ public class DependencyList {
                 for (File versionFile : FileUtils.list(nameFile)) {
                     String version = versionFile.getName();
                     this.dependencies
-                            .computeIfAbsent(pkg, k -> new HashMap<>())
-                            .computeIfAbsent(name, k -> new HashMap<>())
+                            .computeIfAbsent(pkg, k -> new LinkedHashMap<>())
+                            .computeIfAbsent(name, k -> new LinkedHashMap<>())
                             .computeIfAbsent(version, k -> new ArrayList<>())
                             .add(versionFile);
                 }
