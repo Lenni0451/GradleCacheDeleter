@@ -85,8 +85,12 @@ public class GUI extends JFrame {
                     total += result.a();
                     success += result.b();
                 }
-                JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file(s)", "Deleted", JOptionPane.INFORMATION_MESSAGE);
-                this.refresh();
+                if (total == 0) {
+                    JOptionPane.showMessageDialog(this, "No files to delete", "Deleted", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file" + (total == 1 ? "" : "s"), "Deleted", JOptionPane.INFORMATION_MESSAGE);
+                }
+                if (success > 0) this.refresh();
             });
             refreshMenuItem.addActionListener(e -> this.refresh());
             this.dependenciesTable.addMouseListener(new MouseAdapter() {
