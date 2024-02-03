@@ -68,12 +68,13 @@ public class GUI extends JFrame {
                     return false;
                 }
             });
+            this.dependenciesTable.getTableHeader().setReorderingAllowed(false);
 
-            JPopupMenu contextMenu = new JPopupMenu();
+            JPopupMenu itemContextMenu = new JPopupMenu();
             JMenuItem deleteMenuItem = new JMenuItem("Delete");
             JMenuItem refreshMenuItem = new JMenuItem("Refresh");
-            contextMenu.add(deleteMenuItem);
-            contextMenu.add(refreshMenuItem);
+            itemContextMenu.add(deleteMenuItem);
+            itemContextMenu.add(refreshMenuItem);
             deleteMenuItem.addActionListener(e -> {
                 int[] selectedRows = this.dependenciesTable.getSelectedRows();
                 DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
@@ -91,13 +92,21 @@ public class GUI extends JFrame {
             this.dependenciesTable.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    if (e.isPopupTrigger()) {
-                        contextMenu.show(e.getComponent(), e.getX(), e.getY());
-                    }
+                    if (e.isPopupTrigger()) itemContextMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             });
 
+            JPopupMenu tableContextMenu = new JPopupMenu();
+            JMenuItem refreshTableMenuItem = new JMenuItem("Refresh");
+            tableContextMenu.add(refreshTableMenuItem);
+            refreshTableMenuItem.addActionListener(e -> this.refresh());
             JScrollPane scrollPane = new JScrollPane(this.dependenciesTable);
+            scrollPane.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.isPopupTrigger()) tableContextMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            });
             scrollPane.getVerticalScrollBar().setUnitIncrement(16);
             scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
             return scrollPane;
