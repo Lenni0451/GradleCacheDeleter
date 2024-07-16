@@ -5,6 +5,7 @@ import net.lenni0451.gradlecachedeleter.elements.ClickableMenuItem;
 import net.lenni0451.gradlecachedeleter.elements.LoadingPane;
 import net.lenni0451.gradlecachedeleter.elements.PopupMenuTableSelectionListener;
 import net.lenni0451.gradlecachedeleter.utils.FileUtils;
+import net.lenni0451.gradlecachedeleter.utils.StringUtils;
 import net.lenni0451.gradlecachedeleter.utils.Tuple;
 
 import javax.swing.*;
@@ -12,6 +13,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -69,26 +72,17 @@ public class GUI extends JFrame {
                 }
             });
             this.dependenciesTable.getTableHeader().setReorderingAllowed(false);
+            this.dependenciesTable.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    if (e.getKeyChar() != KeyEvent.VK_DELETE) return;
+                    GUI.this.deleteSelected();
+                }
+            });
 
             JPopupMenu itemContextMenu = new JPopupMenu();
             itemContextMenu.addPopupMenuListener(new PopupMenuTableSelectionListener(itemContextMenu, this.dependenciesTable));
-            itemContextMenu.add(new ClickableMenuItem("Delete", () -> {
-                int[] selectedRows = this.dependenciesTable.getSelectedRows();
-                DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
-                int total = 0;
-                int success = 0;
-                for (int row : selectedRows) {
-                    Tuple<Integer, Integer> result = this.delete((String) model.getValueAt(row, 0), (String) model.getValueAt(row, 1), (String) model.getValueAt(row, 2));
-                    total += result.a();
-                    success += result.b();
-                }
-                if (total == 0) {
-                    JOptionPane.showMessageDialog(this, "No files to delete", "Deleted", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file" + (total == 1 ? "" : "s"), "Deleted", JOptionPane.INFORMATION_MESSAGE);
-                }
-                if (success > 0) this.refresh();
-            }));
+            itemContextMenu.add(new ClickableMenuItem("Delete", this::deleteSelected));
             itemContextMenu.add(new ClickableMenuItem("Refresh", this::refresh));
             this.dependenciesTable.setComponentPopupMenu(itemContextMenu);
 
@@ -100,6 +94,24 @@ public class GUI extends JFrame {
             scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
             return scrollPane;
         });
+    }
+
+    private void deleteSelected() {
+        int[] selectedRows = this.dependenciesTable.getSelectedRows();
+        DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
+        int total = 0;
+        int success = 0;
+        for (int row : selectedRows) {
+            Tuple<Integer, Integer> result = this.delete((String) model.getValueAt(row, 0), (String) model.getValueAt(row, 1), (String) model.getValueAt(row, 2));
+            total += result.a();
+            success += result.b();
+        }
+        if (total == 0) {
+            JOptionPane.showMessageDialog(this, "No files to delete", "Deleted", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file" + (total == 1 ? "" : "s"), "Deleted", JOptionPane.INFORMATION_MESSAGE);
+        }
+        if (success > 0) this.refresh();
     }
 
     private void refresh() {
@@ -133,24 +145,10 @@ public class GUI extends JFrame {
                 for (Map.Entry<String, List<File>> versionEntry : nameEntry.getValue().entrySet()) {
                     String version = versionEntry.getKey();
 
-                    if (this.matchesAll(search, pkg, name, version)) model.addRow(new Object[]{pkg, name, version});
+                    if (StringUtils.matchesAll(search, pkg, name, version)) model.addRow(new Object[]{pkg, name, version});
                 }
             }
         }
-    }
-
-    private boolean matchesAll(final String[] search, final String... parts) {
-        for (String s : search) {
-            boolean found = false;
-            for (String part : parts) {
-                if (part.toLowerCase().contains(s)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) return false;
-        }
-        return true;
     }
 
     private Tuple<Integer, Integer> delete(final String pkg, final String name, final String version) {
