@@ -118,6 +118,7 @@ public class GUI extends JFrame {
         this.loadingPane = new LoadingPane();
         this.setGlassPane(this.loadingPane);
         this.loadingPane.setVisible(true);
+        this.loadingPane.requestFocusInWindow();
 
         this.dependenciesFuture = CompletableFuture
                 .supplyAsync(DependencyList::new)
@@ -127,6 +128,7 @@ public class GUI extends JFrame {
                     this.setGlassPane(new JPanel());
 
                     this.refreshTable();
+                    this.searchField.requestFocusInWindow();
                 }));
     }
 
