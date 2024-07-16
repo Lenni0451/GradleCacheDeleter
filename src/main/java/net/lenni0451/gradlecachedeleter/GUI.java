@@ -1,6 +1,7 @@
 package net.lenni0451.gradlecachedeleter;
 
 import net.lenni0451.commons.swing.GBC;
+import net.lenni0451.gradlecachedeleter.elements.ClickableMenuItem;
 import net.lenni0451.gradlecachedeleter.elements.LoadingPane;
 import net.lenni0451.gradlecachedeleter.utils.FileUtils;
 import net.lenni0451.gradlecachedeleter.utils.Tuple;
@@ -10,8 +11,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -71,11 +70,7 @@ public class GUI extends JFrame {
             this.dependenciesTable.getTableHeader().setReorderingAllowed(false);
 
             JPopupMenu itemContextMenu = new JPopupMenu();
-            JMenuItem deleteMenuItem = new JMenuItem("Delete");
-            JMenuItem refreshMenuItem = new JMenuItem("Refresh");
-            itemContextMenu.add(deleteMenuItem);
-            itemContextMenu.add(refreshMenuItem);
-            deleteMenuItem.addActionListener(e -> {
+            itemContextMenu.add(new ClickableMenuItem("Delete", () -> {
                 int[] selectedRows = this.dependenciesTable.getSelectedRows();
                 DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
                 int total = 0;
@@ -91,26 +86,14 @@ public class GUI extends JFrame {
                     JOptionPane.showMessageDialog(this, "Deleted " + success + " of " + total + " file" + (total == 1 ? "" : "s"), "Deleted", JOptionPane.INFORMATION_MESSAGE);
                 }
                 if (success > 0) this.refresh();
-            });
-            refreshMenuItem.addActionListener(e -> this.refresh());
-            this.dependenciesTable.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    if (e.isPopupTrigger()) itemContextMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            });
+            }));
+            itemContextMenu.add(new ClickableMenuItem("Refresh", this::refresh));
+            this.dependenciesTable.setComponentPopupMenu(itemContextMenu);
 
-            JPopupMenu tableContextMenu = new JPopupMenu();
-            JMenuItem refreshTableMenuItem = new JMenuItem("Refresh");
-            tableContextMenu.add(refreshTableMenuItem);
-            refreshTableMenuItem.addActionListener(e -> this.refresh());
             JScrollPane scrollPane = new JScrollPane(this.dependenciesTable);
-            scrollPane.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    if (e.isPopupTrigger()) tableContextMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            });
+            JPopupMenu tableContextMenu = new JPopupMenu();
+            tableContextMenu.add(new ClickableMenuItem("Refresh", this::refresh));
+            scrollPane.setComponentPopupMenu(tableContextMenu);
             scrollPane.getVerticalScrollBar().setUnitIncrement(16);
             scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
             return scrollPane;
