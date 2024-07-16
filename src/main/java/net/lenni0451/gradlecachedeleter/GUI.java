@@ -3,6 +3,7 @@ package net.lenni0451.gradlecachedeleter;
 import net.lenni0451.commons.swing.GBC;
 import net.lenni0451.gradlecachedeleter.elements.ClickableMenuItem;
 import net.lenni0451.gradlecachedeleter.elements.LoadingPane;
+import net.lenni0451.gradlecachedeleter.elements.PopupMenuTableSelectionListener;
 import net.lenni0451.gradlecachedeleter.utils.FileUtils;
 import net.lenni0451.gradlecachedeleter.utils.Tuple;
 
@@ -70,6 +71,7 @@ public class GUI extends JFrame {
             this.dependenciesTable.getTableHeader().setReorderingAllowed(false);
 
             JPopupMenu itemContextMenu = new JPopupMenu();
+            itemContextMenu.addPopupMenuListener(new PopupMenuTableSelectionListener(itemContextMenu, this.dependenciesTable));
             itemContextMenu.add(new ClickableMenuItem("Delete", () -> {
                 int[] selectedRows = this.dependenciesTable.getSelectedRows();
                 DefaultTableModel model = (DefaultTableModel) this.dependenciesTable.getModel();
