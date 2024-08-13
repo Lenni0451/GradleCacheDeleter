@@ -28,7 +28,7 @@ public class GUI extends JFrame {
     private JTable dependenciesTable;
 
     public GUI() {
-        super("Gradle Cache Deleter");
+        super("Gradle Cache Deleter - v${version}");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(500, 500);
         this.setLocationRelativeTo(null);
