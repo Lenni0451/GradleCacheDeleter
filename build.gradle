@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     implementation "com.google.code.findbugs:jsr305:3.0.2"
-    include "net.lenni0451.commons:swing:1.4.2"
+    include "net.lenni0451.commons:swing:1.6.0"
 }
 
 jar {
